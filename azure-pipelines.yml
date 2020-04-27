@@ -35,8 +35,8 @@ stages:
            echo "[INFO] BUILD_ARTIFACTS    | build                               |"
            echo "[INFO] ----------------------------------------------------------\n"
            if (Test-Path -Path "$(Build.SourcesDirectory)/gradlew"){
-               write-host("[INFO] Gradle Wrapper found - running ./gradlew $gradle_params ")
-               ./gradlew $gradle_params
+                 write-host("[INFO] Gradle Wrapper found - running ./gradlew $gradle_params ")
+                ./gradlew $gradle_params
            }else{
                  write-host{"[INFO] running gradle $gradle_params}"
                  gradle $gradle_params

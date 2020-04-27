@@ -1,0 +1,43 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+  vmImage: 'windows-latest'
+
+parameters:
+- name: AGENT
+  type: string
+  default: windows 
+- name: GRADLE_BUILD_ARGS 
+  type: string	 
+  default: clean assemble --warning-mode all 
+- name: BUILD_ARTIFACTS 
+  type: string	 
+  default: build
+  
+stages:
+- stage: Build
+  jobs:
+  - job: Gradle_build
+    steps:
+      - powershell: |
+           $gradle_params="${{ parameters.GRADLE_BUILD_ARGS }}"
+           echo "\n[INFO] Gradle Build Arguments, could be over-ridden through respective parameters"
+           echo "[INFO] ----------------------------------------------------------"
+           echo "[INFO]  Parameter         |    Default Value                    |"             
+           echo "[INFO] ----------------------------------------------------------"
+           echo "[INFO] GRADLE_BUILD_ARGS  | clean assemble --warning-mode all   |"
+           echo "[INFO] BUILD_ARTIFACTS    | build                               |"
+           echo "[INFO] ----------------------------------------------------------\n"
+		   if (Test-Path -Path "$(Build.SourcesDirectory)/gradlew"){
+               write-host("[INFO] Gradle Wrapper found - running ./gradlew $gradle_params ")
+               ./gradlew $gradle_params
+           }else{
+		      write-host{"[INFO] running gradle $gradle_params}"
+              gradle $gradle_params
+		   }
